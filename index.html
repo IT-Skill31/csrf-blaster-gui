@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSRF-Blaster GUI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-shield-lock me-2"></i>CSRF-Blaster GUI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" data-bs-toggle="modal" data-bs-target="#aboutModal">
+                            <i class="bi bi-info-circle me-1"></i>About
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-gear me-2"></i>Test Configuration
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="csrfTestForm">
+                            <div class="row mb-3">
+                                <div class="col-md-8">
+                                    <label for="targetUrl" class="form-label">Target URL</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-link-45deg"></i></span>
+                                        <input type="url" class="form-control" id="targetUrl" required placeholder="http://localhost:4000">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="framework" class="form-label">Framework</label>
+                                    <select class="form-select" id="framework">
+                                        <option value="express">Express.js</option>
+                                        <option value="react">React</option>
+                                        <option value="angular">Angular</option>
+                                        <option value="vue">Vue.js</option>
+                                        <option value="next">Next.js</option>
+                                        <option value="nuxt">Nuxt.js</option>
+                                        <option value="svelte">Svelte</option>
+                                        <option value="auto">Auto Detect</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header bg-light py-2">
+                                            <h6 class="mb-0">Test Options</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" id="scanFormsCheckbox" checked>
+                                                <label class="form-check-label" for="scanFormsCheckbox">Scan Forms</label>
+                                            </div>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" id="testApisCheckbox" checked>
+                                                <label class="form-check-label" for="testApisCheckbox">Test API Endpoints</label>
+                                            </div>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" id="generatePayloadsCheckbox" checked>
+                                                <label class="form-check-label" for="generatePayloadsCheckbox">Generate Payloads</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header bg-light py-2">
+                                            <h6 class="mb-0">Advanced Settings</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-2">
+                                                <label for="timeoutInput" class="form-label">Timeout (ms)</label>
+                                                <input type="number" class="form-control" id="timeoutInput" value="5000" min="1000" max="30000">
+                                            </div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="verboseModeCheckbox">
+                                                <label class="form-check-label" for="verboseModeCheckbox">Verbose Mode</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
+                                            <h6 class="mb-0">API Endpoints to Test</h6>
+                                            <button type="button" class="btn btn-sm btn-success" id="addApiEndpointBtn">
+                                                <i class="bi bi-plus-circle me-1"></i>Add Endpoint
+                                            </button>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover mb-0" id="apiEndpointsTable">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>URL Path</th>
+                                                            <th>Method</th>
+                                                            <th>Data</th>
+                                                            <th class="text-center">Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><input type="text" class="form-control form-control-sm" placeholder="/api/user/update" value="/api/user/update"></td>
+                                                            <td>
+                                                                <select class="form-select form-select-sm">
+                                                                    <option value="POST">POST</option>
+                                                                    <option value="PUT">PUT</option>
+                                                                    <option value="DELETE">DELETE</option>
+                                                                    <option value="PATCH">PATCH</option>
+                                                                </select>
+                                                            </td>
+                                                            <td><input type="text" class="form-control form-control-sm" placeholder='{"name":"Tester"}' value='{"name":"Test User","email":"app@example.com"}'></td>
+                                                            <td class="text-center">
+                                                                <button type="button" class="btn btn-sm btn-danger delete-endpoint-btn">
+                                                                    <i class="bi bi-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="button" class="btn btn-outline-secondary" id="resetFormBtn">
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+                                </button>
+                                <button type="submit" class="btn btn-primary" id="startTestBtn">
+                                    <i class="bi bi-play-fill me-1"></i>Start Test
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Test Progress Section -->
+                <div class="card shadow-sm mb-4" id="testProgressCard" style="display: none;">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-activity me-2"></i>Test Progress
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="progress mb-3">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" id="testProgressBar" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <div class="alert alert-info" id="testStatusMessage">
+                            Preparing to test...
+                        </div>
+                        <div class="console-output bg-dark text-light p-3 rounded">
+                            <div id="testConsole"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Test Results Section -->
+                <div class="card shadow-sm mb-4" id="resultsCard" style="display: none;">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-clipboard-check me-2"></i>Test Results
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">Total Tests</h6>
+                                        <h3 class="mb-0" id="totalTestsCount">0</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-danger text-white">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">Vulnerable</h6>
+                                        <h3 class="mb-0" id="vulnerableCount">0</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">Protected</h6>
+                                        <h3 class="mb-0" id="protectedCount">0</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-warning">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">Errors</h6>
+                                        <h3 class="mb-0" id="errorCount">0</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul class="nav nav-tabs mb-3" id="resultsTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summary" type="button" role="tab">Summary</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">Details</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="payloads-tab" data-bs-toggle="tab" data-bs-target="#payloads" type="button" role="tab">Payloads</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="recommendations-tab" data-bs-toggle="tab" data-bs-target="#recommendations" type="button" role="tab">Recommendations</button>
+                            </li>
+                        </ul>
+                        
+                        <div class="tab-content" id="resultsTabContent">
+                            <div class="tab-pane fade show active" id="summary" role="tabpanel">
+                                <div class="alert alert-primary mb-3">
+                                    <h5><i class="bi bi-info-circle me-2"></i>Summary</h5>
+                                    <p id="summaryText">No tests have been run yet.</p>
+                                </div>
+                                
+                                <div id="vulnerabilitySummary"></div>
+                            </div>
+                            
+                            <div class="tab-pane fade" id="details" role="tabpanel">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover" id="detailsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Endpoint</th>
+                                                <th>Method</th>
+                                                <th>Status</th>
+                                                <th>Result</th>
+                                                <th>Details</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="detailsTableBody">
+                                            <!-- Results will be populated here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="tab-pane fade" id="payloads" role="tabpanel">
+                                <div id="payloadsList" class="list-group">
+                                    <!-- Payloads will be listed here -->
+                                </div>
+                            </div>
+                            
+                            <div class="tab-pane fade" id="recommendations" role="tabpanel">
+                                <div class="alert alert-info mb-3">
+                                    <h5><i class="bi bi-lightbulb me-2"></i>Recommendations</h5>
+                                    <p id="recommendationsText">Run a test to get recommendations for improving CSRF protection.</p>
+                                </div>
+                                
+                                <div class="card">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">Express.js CSRF Protection Implementation</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>To implement CSRF protection in Express.js applications, follow these steps:</p>
+                                        
+                                        <div class="code-block">
+                                            <pre><code class="language-javascript">const express = require('express');
+const csrf = require('csurf');
+const cookieParser = require('cookie-parser');
+
+const app = express();
+
+// Setup middleware
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: false }));
+app.use(csrf({ cookie: true }));
+
+// Add CSRF token to all rendered templates
+app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
+// In your HTML forms, include the CSRF token:
+// &lt;input type="hidden" name="_csrf" value="{{ csrfToken }}"&gt;
+
+// Error handler for CSRF errors
+app.use((err, req, res, next) => {
+  if (err.code === 'EBADCSRFTOKEN') {
+    return res.status(403).send('CSRF validation failed');
+  }
+  next(err);
+});</code></pre>
+                                        </div>
+                                        
+                                        <p class="mt-3">For JSON APIs, add the CSRF token to headers:</p>
+                                        
+                                        <div class="code-block">
+                                            <pre><code class="language-javascript">// In your client-side JavaScript
+const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+fetch('/api/data', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'CSRF-Token': token // Sent in the header
+  },
+  body: JSON.stringify(data)
+});</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                            <button type="button" class="btn btn-outline-secondary" id="exportResultsBtn">
+                                <i class="bi bi-download me-1"></i>Export Results
+                            </button>
+                            <button type="button" class="btn btn-primary" id="runNewTestBtn">
+                                <i class="bi bi-arrow-repeat me-1"></i>Run New Test
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Payload Modal -->
+    <div class="modal fade" id="viewPayloadModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="payloadModalTitle">CSRF Payload</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="code-block">
+                        <pre><code id="payloadModalContent" class="language-html"></code></pre>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" id="copyPayloadBtn">
+                        <i class="bi bi-clipboard me-1"></i>Copy
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" id="downloadPayloadBtn">
+                        <i class="bi bi-download me-1"></i>Download
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div class="modal fade" id="aboutModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">About CSRF-Blaster GUI</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-shield-lock" style="font-size: 3rem;"></i>
+                        <h4 class="mt-2">CSRF-Blaster GUI</h4>
+                        <p class="text-muted">Version 1.0.0</p>
+                    </div>
+                    
+                    <p>A graphical interface for testing Cross-Site Request Forgery (CSRF) vulnerabilities in web applications.</p>
+                    
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Warning:</strong> This tool is intended for ethical security testing only. Always ensure you have proper authorization before testing any system.
+                    </div>
+                    
+                    <p class="mb-0"><strong>Supported Frameworks:</strong> Express.js, React, Angular, Vue.js, Next.js, Nuxt.js, Svelte</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/highlight.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

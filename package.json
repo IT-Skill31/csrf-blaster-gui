@@ -1,0 +1,40 @@
+{
+    "name": "csrf-blaster-gui",
+    "version": "1.0.0",
+    "description": "A graphical user interface for testing CSRF vulnerabilities",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js",
+      "dev": "nodemon server.js"
+    },
+    "keywords": [
+      "csrf",
+      "security",
+      "testing",
+      "pentesting",
+      "web-security",
+      "gui"
+    ],
+    "author": "Adda REFES",
+    "license": "MIT",
+    "dependencies": {
+      "body-parser": "^1.20.2",
+      "express": "^4.18.2",
+      "puppeteer": "^21.5.0",
+      "csrf-blaster": "^0.1.0"
+    },
+    "devDependencies": {
+      "nodemon": "^3.0.1"
+    },
+    "engines": {
+      "node": ">=14.0.0"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/IT-Skill31/csrf-blaster-gui.git"
+    },
+    "bugs": {
+      "url": "https://github.com/IT-Skill31/csrf-blaster-gui/issues"
+    },
+    "homepage": "https://github.com/IT-Skill31/csrf-blaster-gui#readme"
+  }

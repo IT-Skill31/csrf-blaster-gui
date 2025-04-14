@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSRF Form Example - Vulnerable</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .container {
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .info-box {
+      background-color: #f8f9fa;
+      border-left: 4px solid #007bff;
+      padding: 10px 15px;
+      margin-bottom: 20px;
+    }
+    .warning-box {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 10px 15px;
+      margin-bottom: 20px;
+      color: #856404;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    .tab {
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+    .tab.active {
+      border-bottom: 2px solid #007bff;
+      font-weight: bold;
+    }
+    .code {
+      background-color: #f5f5f5;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-family: monospace;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <h1>CSRF Form Example - Vulnerable</h1>
+  
+  <div class="warning-box">
+    <strong>Warning:</strong> This is an intentionally vulnerable form for CSRF testing purposes.
+    The form lacks CSRF protection to demonstrate how CSRF vulnerabilities work.
+  </div>
+  
+  <div class="info-box">
+    <p>This is a demonstration of a form that is vulnerable to Cross-Site Request Forgery (CSRF) attacks.
+    Use this with CSRF-Blaster GUI to understand how CSRF vulnerabilities can be detected and exploited.</p>
+  </div>
+  
+  <div class="tabs">
+    <div class="tab active" data-tab="form">Form</div>
+    <div class="tab" data-tab="code">Code</div>
+    <div class="tab" data-tab="explanation">Explanation</div>
+  </div>
+  
+  <div class="tab-content active" id="form">
+    <div class="container">
+      <h2>User Profile Update</h2>
+      <form id="profileForm" action="/api/update-profile" method="POST">
+        <div class="form-group">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" value="John Doe" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" value="john@example.com" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="role">Role:</label>
+          <select id="role" name="role">
+            <option value="user">User</option>
+            <option value="editor">Editor</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        
+        <button type="button" onclick="submitForm()">Update Profile</button>
+      </form>
+      
+      <div id="formResult" class="result" style="display: none;"></div>
+    </div>
+  </div>
+  
+  <div class="tab-content" id="code">
+    <div class="container">
+      <h2>Form HTML Code</h2>
+      <div class="code">
+&lt;form id="profileForm" action="/api/update-profile" method="POST"&gt;
+  &lt;div class="form-group"&gt;
+    &lt;label for="name"&gt;Name:&lt;/label&gt;
+    &lt;input type="text" id="name" name="name" value="John Doe" required&gt;
+  &lt;/div&gt;
+  
+  &lt;div class="form-group"&gt;
+    &lt;label for="email"&gt;Email:&lt;/label&gt;
+    &lt;input type="email" id="email" name="email" value="john@example.com" required&gt;
+  &lt;/div&gt;
+  
+  &lt;div class="form-group"&gt;
+    &lt;label for="role"&gt;Role:&lt;/label&gt;
+    &lt;select id="role" name="role"&gt;
+      &lt;option value="user"&gt;User&lt;/option&gt;
+      &lt;option value="editor"&gt;Editor&lt;/option&gt;
+      &lt;option value="admin"&gt;Admin&lt;/option&gt;
+    &lt;/select&gt;
+  &lt;/div&gt;
+  
+  &lt;button type="button" onclick="submitForm()"&gt;Update Profile&lt;/button&gt;
+&lt;/form&gt;
+      </div>
+      
+      <h2>Submit Function</h2>
+      <div class="code">
+// This function simulates a form submission
+function submitForm() {
+  const form = document.getElementById('profileForm');
+  const formData = new FormData(form);
+  
+  // Convert FormData to an object
+  const data = {};
+  for (let [key, value] of formData.entries()) {
+    data[key] = value;
+  }
+  
+  // Display the submission data
+  document.getElementById('formResult').style.display = 'block';
+  document.getElementById('formResult').innerHTML = 
+    '&lt;h3&gt;Form Submitted&lt;/h3&gt;' +
+    '&lt;p&gt;The form was successfully submitted with the following data:&lt;/p&gt;' +
+    '&lt;pre&gt;' + JSON.stringify(data, null, 2) + '&lt;/pre&gt;';
+  
+  // In a real application, this would be sent to the server
+  console.log('Submitting data:', data);
+}
+      </div>
+    </div>
+  </div>
+  
+  <div class="tab-content" id="explanation">
+    <div class="container">
+      <h2>Why This Form Is Vulnerable</h2>
+      <p>This form is vulnerable to CSRF attacks for several reasons:</p>
+      
+      <ol>
+        <li><strong>No CSRF Token:</strong> The form does not include a CSRF token, which would allow the server to verify that the request came from a legitimate page.</li>
+        <li><strong>Uses Standard Form Submission:</strong> The form uses a standard POST method that browsers will automatically include cookies with.</li>
+        <li><strong>No Origin Checking:</strong> The server does not validate the origin of the request.</li>
+      </ol>
+      
+      <h2>How To Protect This Form</h2>
+      <p>To protect this form against CSRF attacks, you should:</p>
+      
+      <div class="code">
+// Server-side implementation (Node.js/Express example)
+const express = require('express');
+const csrf = require('csurf');
+const cookieParser = require('cookie-parser');
+
+const app = express();
+
+// Setup middleware
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: false }));
+app.use(csrf({ cookie: true }));
+
+// Add CSRF token to all rendered templates
+app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
+// In your HTML form, add the CSRF token:
+// &lt;input type="hidden" name="_csrf" value="{{ csrfToken }}"&gt;
+
+// Handle CSRF errors
+app.use((err, req, res, next) => {
+  if (err.code === 'EBADCSRFTOKEN') {
+    return res.status(403).send('CSRF validation failed');
+  }
+  next(err);
+});
+      </div>
+      
+      <h2>Demonstration With CSRF-Blaster GUI</h2>
+      <p>When testing this form with CSRF-Blaster GUI:</p>
+      
+      <ol>
+        <li>The GUI will detect that this form uses the POST method</li>
+        <li>It will scan the form and notice there's no CSRF token</li>
+        <li>It will generate a test payload to demonstrate the vulnerability</li>
+        <li>The test will indicate that the form is vulnerable to CSRF attacks</li>
+      </ol>
+      
+      <p>This helps you identify CSRF vulnerabilities before attackers can exploit them.</p>
+    </div>
+  </div>
+
+  <script>
+    // Tab functionality
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        // Add active class to clicked tab
+        tab.classList.add('active');
+        
+        // Hide all tab content
+        document.querySelectorAll('.tab-content').forEach(content => {
+          content.classList.remove('active');
+        });
+        
+        // Show the selected tab content
+        const tabId = tab.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+    
+    // This function simulates a form submission
+    function submitForm() {
+      const form = document.getElementById('profileForm');
+      const formData = new FormData(form);
+      
+      // Convert FormData to an object
+      const data = {};
+      for (let [key, value] of formData.entries()) {
+        data[key] = value;
+      }
+      
+      // Display the submission data
+      document.getElementById('formResult').style.display = 'block';
+      document.getElementById('formResult').innerHTML = 
+        '<h3>Form Submitted</h3>' +
+        '<p>The form was successfully submitted with the following data:</p>' +
+        '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+      
+      // In a real application, this would be sent to the server
+      console.log('Submitting data:', data);
+    }
+  </script>
+</body>
+</html>

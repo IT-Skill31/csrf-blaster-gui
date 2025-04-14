@@ -1,0 +1,242 @@
+/* Main Styles */
+body {
+    background-color: #f5f5f7;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.navbar-brand {
+    font-weight: 600;
+}
+
+.card {
+    border-radius: 10px;
+    overflow: hidden;
+    border: none;
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-weight: 600;
+}
+
+/* Console Output Styles */
+.console-output {
+    max-height: 300px;
+    overflow-y: auto;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.85rem;
+}
+
+#testConsole {
+    white-space: pre-wrap;
+}
+
+.console-info {
+    color: #75b7ff;
+}
+
+.console-success {
+    color: #5cb85c;
+}
+
+.console-warning {
+    color: #f0ad4e;
+}
+
+.console-error {
+    color: #d9534f;
+}
+
+/* Code Block Styles */
+.code-block {
+    background: #282c34;
+    border-radius: 6px;
+    margin: 0;
+}
+
+.code-block pre {
+    margin: 0;
+    padding: 16px;
+    overflow-x: auto;
+}
+
+.code-block code {
+    color: #abb2bf;
+    background: transparent;
+}
+
+/* Table Styles */
+.table-responsive {
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+#apiEndpointsTable th,
+#apiEndpointsTable td {
+    vertical-align: middle;
+}
+
+/* Badge Status Styles */
+.badge-vulnerable {
+    background-color: #dc3545;
+}
+
+.badge-protected {
+    background-color: #198754;
+}
+
+.badge-error {
+    background-color: #ffc107;
+    color: #343a40;
+}
+
+/* Animation for Progress */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.pulsing {
+    animation: pulse 1.5s infinite;
+}
+
+/* Vulnerability Summary Item */
+.vulnerability-item {
+    border-left: 4px solid transparent;
+    margin-bottom: 12px;
+    padding: 10px 15px;
+    border-radius: 0 6px 6px 0;
+    background-color: #f8f9fa;
+}
+
+.vulnerability-item.vulnerable {
+    border-left-color: #dc3545;
+}
+
+.vulnerability-item.protected {
+    border-left-color: #198754;
+}
+
+.vulnerability-item.error {
+    border-left-color: #ffc107;
+}
+
+/* Details button for vulnerability items */
+.vuln-details-btn {
+    cursor: pointer;
+    color: #6c757d;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.vuln-details-btn:hover {
+    text-decoration: underline;
+    color: #0d6efd;
+}
+
+/* Payload list item */
+#payloadsList .list-group-item {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#payloadsList .list-group-item:hover {
+    background-color: #f0f7ff;
+}
+
+/* Status badges in details table */
+.status-badge {
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+}
+
+.status-200 {
+    background-color: #0d6efd; /* Primary */
+}
+
+.status-201 {
+    background-color: #20c997; /* Teal */
+}
+
+.status-204 {
+    background-color: #0dcaf0; /* Info */
+}
+
+.status-400 {
+    background-color: #fd7e14; /* Orange */
+}
+
+.status-401, .status-403 {
+    background-color: #6f42c1; /* Purple */
+}
+
+.status-404 {
+    background-color: #6c757d; /* Secondary */
+}
+
+.status-500 {
+    background-color: #dc3545; /* Danger */
+}
+
+.status-timeout {
+    background-color: #ffc107; /* Warning */
+    color: #000;
+}
+
+/* Tooltip styles */
+.custom-tooltip {
+    position: relative;
+}
+
+.custom-tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    opacity: 0;
+    background-color: #343a40;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 0.3s;
+    white-space: nowrap;
+    font-size: 12px;
+}
+
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #343a40 transparent transparent transparent;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-title {
+        font-size: 1.2rem;
+    }
+    
+    .table th, .table td {
+        font-size: 0.9rem;
+    }
+}
