@@ -2,7 +2,7 @@
 
 A powerful graphical user interface for testing Cross-Site Request Forgery (CSRF) vulnerabilities in web applications.
 
-![CSRF-Blaster GUI Screenshot](https://placeholder-image.com/csrf-blaster-gui-screenshot.png)
+![CSRF-Blaster GUI Screenshot](https://reviewsradar.shop/wp-content/uploads/2025/04/csrf-blaster-gui-screenshot.png)
 *Note: Replace with your actual screenshot once available*
 
 ## Overview
@@ -33,7 +33,7 @@ CSRF-Blaster GUI provides an intuitive interface for security professionals and 
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/your-username/csrf-blaster-gui.git
+git clone https://github.com/IT-Skill31/csrf-blaster-gui.git
 cd csrf-blaster-gui
 ```
 
@@ -213,6 +213,6 @@ If you discover a security vulnerability, please send an email to [your-email]. 
 
 ## Acknowledgements
 
-* Built on top of the [CSRF-Blaster](https://github.com/your-username/csrf-blaster) package
+* Built on top of the [CSRF-Blaster](https://github.com/IT-Skill31/csrf-blaster) package
 * Interface designed with [Bootstrap](https://getbootstrap.com/)
 * Testing powered by [Puppeteer](https://pptr.dev/)
